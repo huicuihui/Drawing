@@ -24,13 +24,6 @@ typedef NS_ENUM(NSUInteger, TouchType)
     UNSELECT_MARK,      //按下去的动作是选中一个已被选中的批注
     RESIZE_MARK         //按下去的动作是编辑已被选中的批注
 };
-typedef NS_ENUM(NSUInteger, TouchDirection)
-{
-    Left_Top,           //左上角
-    Right_Top,          //右上角
-    Left_Bottom,        //左下角
-    Right_Bottom        //右下角
-};
 // experimental code
 
 @interface DrawingView ()
@@ -45,7 +38,6 @@ typedef NS_ENUM(NSUInteger, TouchDirection)
 @property (nonatomic, assign)TouchType touchType;
 @property (nonatomic, assign)int movedIndex;
 
-@property (nonatomic, assign)TouchDirection touchDirection;//点的哪个角
 @end
 
 #pragma mark -
@@ -242,28 +234,24 @@ typedef NS_ENUM(NSUInteger, TouchDirection)
     //始终保持终点坐标lastPoint改变,firstPoint不变.
     DrawingTool *rectT = self.bufferArray[self.movedIndex];
     if ([self inCircleWithX:rectT.firstPoint.x y:rectT.firstPoint.y]) {
-        self.touchDirection = Left_Top;
         CGPoint newRectFirstPoint = rectT.lastPoint;
         CGPoint newRectLastPoint = rectT.firstPoint;
         [rectT moveFromPoint:newRectFirstPoint toPoint:newRectLastPoint];
         return YES;
     }
     if ([self inCircleWithX:rectT.firstPoint.x y:rectT.lastPoint.y]) {
-        self.touchDirection = Left_Bottom;
         CGPoint newRectFirstPoint = CGPointMake(rectT.lastPoint.x, rectT.firstPoint.y);
         CGPoint newRectLastPoint = CGPointMake(rectT.firstPoint.x, rectT.lastPoint.y);
         [rectT moveFromPoint:newRectFirstPoint toPoint:newRectLastPoint];
         return YES;
     }
     if ([self inCircleWithX:rectT.lastPoint.x y:rectT.firstPoint.y]) {
-        self.touchDirection = Right_Top;
         CGPoint newRectFirstPoint = CGPointMake(rectT.firstPoint.x, rectT.lastPoint.y);
         CGPoint newRectLastPoint = CGPointMake(rectT.lastPoint.x, rectT.firstPoint.y);
         [rectT moveFromPoint:newRectFirstPoint toPoint:newRectLastPoint];
         return YES;
     }
     if ([self inCircleWithX:rectT.lastPoint.x y:rectT.lastPoint.y]) {
-        self.touchDirection = Right_Bottom;
         return YES;
     }
     return  NO;
