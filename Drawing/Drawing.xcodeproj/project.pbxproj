@@ -13,6 +13,9 @@
 		181F37731E52CC37007FE288 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 181F37711E52CC37007FE288 /* Main.storyboard */; };
 		181F37751E52CC37007FE288 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 181F37741E52CC37007FE288 /* Assets.xcassets */; };
 		181F37781E52CC37007FE288 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 181F37761E52CC37007FE288 /* LaunchScreen.storyboard */; };
+		181F37841E52CD6D007FE288 /* DrawingTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 181F37811E52CD6D007FE288 /* DrawingTool.m */; };
+		181F37851E52CD6D007FE288 /* DrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 181F37831E52CD6D007FE288 /* DrawingView.m */; };
+		181F37881E52CDA0007FE288 /* PinggaiView.m in Sources */ = {isa = PBXBuildFile; fileRef = 181F37871E52CDA0007FE288 /* PinggaiView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +29,12 @@
 		181F37741E52CC37007FE288 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		181F37771E52CC37007FE288 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		181F37791E52CC37007FE288 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		181F37801E52CD6D007FE288 /* DrawingTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingTool.h; sourceTree = "<group>"; };
+		181F37811E52CD6D007FE288 /* DrawingTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingTool.m; sourceTree = "<group>"; };
+		181F37821E52CD6D007FE288 /* DrawingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingView.h; sourceTree = "<group>"; };
+		181F37831E52CD6D007FE288 /* DrawingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingView.m; sourceTree = "<group>"; };
+		181F37861E52CDA0007FE288 /* PinggaiView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinggaiView.h; sourceTree = "<group>"; };
+		181F37871E52CDA0007FE288 /* PinggaiView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinggaiView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +71,12 @@
 				181F376C1E52CC37007FE288 /* AppDelegate.m */,
 				181F376E1E52CC37007FE288 /* ViewController.h */,
 				181F376F1E52CC37007FE288 /* ViewController.m */,
+				181F37801E52CD6D007FE288 /* DrawingTool.h */,
+				181F37811E52CD6D007FE288 /* DrawingTool.m */,
+				181F37821E52CD6D007FE288 /* DrawingView.h */,
+				181F37831E52CD6D007FE288 /* DrawingView.m */,
+				181F37861E52CDA0007FE288 /* PinggaiView.h */,
+				181F37871E52CDA0007FE288 /* PinggaiView.m */,
 				181F37711E52CC37007FE288 /* Main.storyboard */,
 				181F37741E52CC37007FE288 /* Assets.xcassets */,
 				181F37761E52CC37007FE288 /* LaunchScreen.storyboard */,
@@ -153,6 +168,9 @@
 			files = (
 				181F37701E52CC37007FE288 /* ViewController.m in Sources */,
 				181F376D1E52CC37007FE288 /* AppDelegate.m in Sources */,
+				181F37841E52CD6D007FE288 /* DrawingTool.m in Sources */,
+				181F37851E52CD6D007FE288 /* DrawingView.m in Sources */,
+				181F37881E52CDA0007FE288 /* PinggaiView.m in Sources */,
 				181F376A1E52CC37007FE288 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
