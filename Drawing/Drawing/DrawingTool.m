@@ -60,11 +60,9 @@
     CGContextAddPath(ctx, path3.CGPath);
     CGContextAddPath(ctx, path4.CGPath);
 
-    [[UIColor redColor] setStroke];
-
     // 4.将上下文渲染到视图
 //    CGContextStrokePath(ctx);
-    CGContextDrawPath(ctx, kCGPathFillStroke);
+    CGContextDrawPath(ctx, kCGPathFill);
     
 }
 @end

@@ -112,49 +112,36 @@ typedef NS_ENUM(NSUInteger, TouchType)
     // add the first touch
     UITouch *touch = [touches anyObject];
     self.firstPoint = [touch locationInView:self];
-    
+    //如果有选中的矩形, 先判断是否在矩形的小球上. 再判断是否在矩形边上.
+    if (self.movedIndex != -1) {
+        if ([self isInCircle]) {
+            self.touchType = RESIZE_MARK;
+            return;
+        }
+        DrawingTool *rectT = self.bufferArray[self.movedIndex];
+        if ([self isOnRectangleWithTool:rectT]) {
+            self.touchType = UNSELECT_MARK;
+            return;
+        } else {
+            rectT.lineColor = kDefaultLineColor;
+            [self.bufferArray replaceObjectAtIndex:self.movedIndex withObject:rectT];
+            self.touchType = NEW_MARK;
+            [self setNeedsDisplay];
+            [self updateCacheImage:YES];
+        }
+    }
+    //判断是否在其他线上
     for (int index = 0; index < self.bufferArray.count; index ++) {
         DrawingTool *rectTool = self.bufferArray[index];
         if ([self isOnRectangleWithTool:rectTool]) {
-            //屏幕上没有选中的矩形
-            if (self.movedIndex == -1) {
-                self.movedIndex = index;
-                rectTool.lineColor = kSelectedLineColor;
-                [self.bufferArray replaceObjectAtIndex:index withObject:rectTool];
-                [self setNeedsDisplay];
-                [self updateCacheImage:YES];
-                self.touchType = SELECT_MARK;
-            } else {
-                if (self.movedIndex == index) {
-                    if ([self isInCircle]) {
-                        NSLog(@"%s",__FUNCTION__);
-                        self.touchType = RESIZE_MARK;
-                    } else {
-                        self.touchType = UNSELECT_MARK;
-                    }
-                } else {
-                    DrawingTool *rectT = self.bufferArray[self.movedIndex];
-                    rectT.lineColor = kDefaultLineColor;
-                    [self.bufferArray replaceObjectAtIndex:self.movedIndex withObject:rectT];
-                    rectTool.lineColor = kSelectedLineColor;
-                    [self.bufferArray replaceObjectAtIndex:index withObject:rectTool];
-                    self.movedIndex = index;
-                    [self setNeedsDisplay];
-                    [self updateCacheImage:YES];
-                    self.touchType = SELECT_MARK;
-                }
-            }
+            self.movedIndex = index;
+            rectTool.lineColor = kSelectedLineColor;
+            [self.bufferArray replaceObjectAtIndex:index withObject:rectTool];
+            [self setNeedsDisplay];
+            [self updateCacheImage:YES];
+            self.touchType = SELECT_MARK;
             return;
         }
-    }
-    //如果有选中的矩形, 取消选中状态. 新建批注
-    if (self.movedIndex != -1) {
-        DrawingTool *rectT = self.bufferArray[self.movedIndex];
-        rectT.lineColor = kDefaultLineColor;
-        [self.bufferArray replaceObjectAtIndex:self.movedIndex withObject:rectT];
-        self.touchType = NEW_MARK;
-        [self setNeedsDisplay];
-        [self updateCacheImage:YES];
     }
     self.currentTool = [DrawingTool new];
     self.currentTool.lineWidth = kDefaultLineWidth;
