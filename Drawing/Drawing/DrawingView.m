@@ -123,7 +123,7 @@ typedef NS_ENUM(NSUInteger, TouchDirection)
     
     for (int index = 0; index < self.bufferArray.count; index ++) {
         DrawingTool *rectTool = self.bufferArray[index];
-        if ((((fabs(self.firstPoint.x - rectTool.firstPoint.x) <= MarkClickSize) || (fabs(self.firstPoint.x - rectTool.lastPoint.x) <= MarkClickSize)) && ((rectTool.firstPoint.y <= self.firstPoint.y) && (self.firstPoint.y <= rectTool.lastPoint.y))) || (((fabs(self.firstPoint.y - rectTool.firstPoint.y) <= MarkClickSize) || (fabs(self.firstPoint.y - rectTool.lastPoint.y) <= MarkClickSize)) && ((rectTool.firstPoint.x <= self.firstPoint.x) && (self.firstPoint.x <= rectTool.lastPoint.x)))) {
+        if ([self isOnRectangleWithTool:rectTool]) {
             //屏幕上没有选中的矩形
             if (self.movedIndex == -1) {
                 self.movedIndex = index;
@@ -200,40 +200,10 @@ typedef NS_ENUM(NSUInteger, TouchDirection)
         }
         case RESIZE_MARK: {
             DrawingTool *newRectTool = self.bufferArray[self.movedIndex];
-            switch (self.touchDirection) {
-                case Left_Top: {
-                    CGPoint newRectFirstPoint = CGPointMake(newRectTool.firstPoint.x + (currentLocation.x - previousLocation.x), newRectTool.firstPoint.y + (currentLocation.y - previousLocation.y));
-                    [newRectTool moveFromPoint:newRectFirstPoint toPoint:newRectTool.lastPoint];
-                    [self setNeedsDisplay];
-                    [self updateCacheImage:YES];
-                    break;
-                }
-                case Left_Bottom: {
-                    CGPoint newRectFirstPoint = CGPointMake(newRectTool.firstPoint.x + (currentLocation.x - previousLocation.x), newRectTool.lastPoint.y + (currentLocation.y - previousLocation.y));
-                    CGPoint newRectLastPoint = CGPointMake(newRectTool.lastPoint.x, newRectTool.firstPoint.y);
-                    [newRectTool moveFromPoint:newRectFirstPoint toPoint:newRectLastPoint];
-                    [self setNeedsDisplay];
-                    [self updateCacheImage:YES];
-                    break;
-                }
-                case Right_Top: {
-                    CGPoint newRectFirstPoint = CGPointMake(newRectTool.lastPoint.x + (currentLocation.x - previousLocation.x), newRectTool.firstPoint.y + (currentLocation.y - previousLocation.y));
-                    CGPoint newRectLastPoint = CGPointMake(newRectTool.firstPoint.x, newRectTool.lastPoint.y);
-                    [newRectTool moveFromPoint:newRectFirstPoint toPoint:newRectLastPoint];
-                    [self setNeedsDisplay];
-                    [self updateCacheImage:YES];
-                    break;
-                }
-                case Right_Bottom: {
-                    CGPoint newRectLastPoint = CGPointMake(newRectTool.lastPoint.x + (currentLocation.x - previousLocation.x), newRectTool.lastPoint.y + (currentLocation.y - previousLocation.y));
-                    [newRectTool moveFromPoint:newRectTool.firstPoint toPoint:newRectLastPoint];
-                    [self setNeedsDisplay];
-                    [self updateCacheImage:YES];
-                    break;
-                }
-                default:
-                    break;
-            }
+            CGPoint newRectLastPoint = CGPointMake(newRectTool.lastPoint.x + (currentLocation.x - previousLocation.x), newRectTool.lastPoint.y + (currentLocation.y - previousLocation.y));
+            [newRectTool moveFromPoint:newRectTool.firstPoint toPoint:newRectLastPoint];
+            [self setNeedsDisplay];
+            [self updateCacheImage:YES];
             break;
         }
         default:
@@ -253,9 +223,6 @@ typedef NS_ENUM(NSUInteger, TouchDirection)
     if (self.touchType == NEW_MARK && CGPointEqualToPoint(self.firstPoint, self.lastPoint)) {
         self.movedIndex = -1;
     }
-//    if (self.touchType == RESIZE_MARK) {
-//        [self resumeCoordinate];
-//    }
     // update the image
 //    [self updateCacheImage:NO];
     
@@ -272,17 +239,27 @@ typedef NS_ENUM(NSUInteger, TouchDirection)
  * 是否选中批注矩形框的四个圆角
  */
 - (BOOL)isInCircle {
+    //始终保持终点坐标lastPoint改变,firstPoint不变.
     DrawingTool *rectT = self.bufferArray[self.movedIndex];
     if ([self inCircleWithX:rectT.firstPoint.x y:rectT.firstPoint.y]) {
         self.touchDirection = Left_Top;
+        CGPoint newRectFirstPoint = rectT.lastPoint;
+        CGPoint newRectLastPoint = rectT.firstPoint;
+        [rectT moveFromPoint:newRectFirstPoint toPoint:newRectLastPoint];
         return YES;
     }
     if ([self inCircleWithX:rectT.firstPoint.x y:rectT.lastPoint.y]) {
         self.touchDirection = Left_Bottom;
+        CGPoint newRectFirstPoint = CGPointMake(rectT.lastPoint.x, rectT.firstPoint.y);
+        CGPoint newRectLastPoint = CGPointMake(rectT.firstPoint.x, rectT.lastPoint.y);
+        [rectT moveFromPoint:newRectFirstPoint toPoint:newRectLastPoint];
         return YES;
     }
     if ([self inCircleWithX:rectT.lastPoint.x y:rectT.firstPoint.y]) {
         self.touchDirection = Right_Top;
+        CGPoint newRectFirstPoint = CGPointMake(rectT.firstPoint.x, rectT.lastPoint.y);
+        CGPoint newRectLastPoint = CGPointMake(rectT.lastPoint.x, rectT.firstPoint.y);
+        [rectT moveFromPoint:newRectFirstPoint toPoint:newRectLastPoint];
         return YES;
     }
     if ([self inCircleWithX:rectT.lastPoint.x y:rectT.lastPoint.y]) {
@@ -294,11 +271,12 @@ typedef NS_ENUM(NSUInteger, TouchDirection)
 - (BOOL)inCircleWithX:(double)x y:(double)y {
     return pow(self.firstPoint.x - x, 2) + pow(self.firstPoint.y - y, 2) <= pow(MARK_CIRCLE_SIZE, 2);
 }
-//重置坐标
-//- (void)resumeCoordinate {
-//    DrawingTool *newRectTool = self.bufferArray[self.movedIndex];
-//    CGPoint newRectFirstPoint = CGPointMake(newRectTool.firstPoint.x < newRectTool.lastPoint.x ? newRectTool.firstPoint.x : newRectTool.lastPoint.x, newRectTool.firstPoint.y < newRectTool.lastPoint.y ? newRectTool.firstPoint.y : newRectTool.lastPoint.y);
-//    CGPoint newRectLastPoint = CGPointMake(newRectTool.firstPoint.x > newRectTool.lastPoint.x ? newRectTool.firstPoint.x : newRectTool.lastPoint.x, newRectTool.firstPoint.y > newRectTool.lastPoint.y ? newRectTool.firstPoint.y : newRectTool.lastPoint.y);
-//    [newRectTool moveFromPoint:newRectFirstPoint toPoint:newRectLastPoint];
-//}
+#pragma mark 判断点击的点是否在屏幕中的矩形上
+- (BOOL)isOnRectangleWithTool:(DrawingTool *) rectTool {
+    //两条竖线
+    BOOL isOnVertical = ((fabs(self.firstPoint.x - rectTool.firstPoint.x) <= MarkClickSize) || (fabs(self.firstPoint.x - rectTool.lastPoint.x) <= MarkClickSize)) && (((rectTool.firstPoint.y <= self.firstPoint.y) && (self.firstPoint.y <= rectTool.lastPoint.y)) || ((rectTool.firstPoint.y >= self.firstPoint.y) && (self.firstPoint.y >= rectTool.lastPoint.y)));
+    //两条横线
+    BOOL isOnHorizontal = ((fabs(self.firstPoint.y - rectTool.firstPoint.y) <= MarkClickSize) || (fabs(self.firstPoint.y - rectTool.lastPoint.y) <= MarkClickSize)) && (((rectTool.firstPoint.x <= self.firstPoint.x) && (self.firstPoint.x <= rectTool.lastPoint.x)) || ((rectTool.firstPoint.x >= self.firstPoint.x) && (self.firstPoint.x >= rectTool.lastPoint.x)));
+    return isOnVertical || isOnHorizontal;
+}
 @end
