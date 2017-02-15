@@ -3,4 +3,4 @@
 
 演示截图如下:
 
-![image](//https://github.com/huicuihui/Drawing/blob/master/Drawing/Screenshots/Drawing.gif)
+![图片找不到](//https://github.com/huicuihui/Drawing/blob/master/Drawing/Screenshots/Drawing.gif)
